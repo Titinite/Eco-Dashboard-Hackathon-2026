@@ -1,0 +1,25 @@
+<template>
+  <v-navigation-drawer permanent width="240" elevation="0" style="top: 77px; height: calc(100% - 75px);">
+    <v-list nav density="comfortable" class="px-3 pt-3">
+      <v-list-item
+        v-for="item in navItems"
+        :key="item.to"
+        :to="item.to"
+        :prepend-icon="item.icon"
+        :title="item.label"
+        rounded="lg"
+        color="primary"
+        class="mb-1"
+      />
+    </v-list>
+  </v-navigation-drawer>
+</template>
+
+<script setup>
+const navItems = [
+  { to: '/',         icon: 'mdi-office-building-outline', label: 'Sites'       },
+  { to: '/compare',  icon: 'mdi-chart-bar',               label: 'Comparaison' },
+  { to: '/history',  icon: 'mdi-history',                 label: 'Historique'  },
+  { to: '/settings', icon: 'mdi-cog-outline',             label: 'Paramètres'  },
+]
+</script>
