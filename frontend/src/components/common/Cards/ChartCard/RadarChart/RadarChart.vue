@@ -1,20 +1,21 @@
 <template>
-  <Bar :data="chartData" :options="chartOptions" />
+  <Radar :data="chartData" :options="chartOptions" />
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import {
   Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
   Tooltip,
   Legend,
 } from 'chart.js'
-import { Bar } from 'vue-chartjs'
+import { Radar } from 'vue-chartjs'
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend)
 
 const props = defineProps({
   labels:   { type: Array, default: () => [] },
@@ -23,11 +24,12 @@ const props = defineProps({
 
 const chartData = computed(() => ({
   labels: props.labels,
-  datasets: props.datasets.map((d) => ({ ...d, borderRadius: 6 })),
+  datasets: props.datasets,
 }))
 
 const chartOptions = {
   responsive: true,
+	maintainAspectRatio: false,
   plugins: {
     legend: {
       display: true,
@@ -36,8 +38,11 @@ const chartOptions = {
     },
   },
   scales: {
-    x: { grid: { display: false } },
-    y: { grid: { color: '#f3f4f6' } },
+    r: {
+      grid: { color: '#e5e7eb' },
+      pointLabels: { font: { size: 12 }, color: '#6b7280' },
+      ticks: { display: false },
+    },
   },
 }
 </script>
