@@ -6,19 +6,24 @@
       <KpiCard label="CO₂ / employé" value="11.1" unit="t" :trend="-12" />
     </div>
     <div class="grid grid-cols-2 gap-4 mt-6">
-      <v-col cols="12" md="6">
-        <ChartCard title="Évolution des émissions">
-          <LineChart />
-        </ChartCard>
-      </v-col>
-
-      <v-col cols="12" md="6">
-        <ChartCard title="Répartition par catégorie">
-          <BarChart 
-            :labels="['Construction', 'Exploitation', 'Transport']" 
-            :datasets="[{ label: 'CO₂', data: [5200, 9000, 3300], backgroundColor: '#3b82f6' }]" />
-        </ChartCard>
-      </v-col>
+      <ChartCard title="Évolution des émissions">
+        <div style="height: 300px;">
+          <LineChart
+            :labels="['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']"
+            :datasets="[
+              { label: 'Émissions t CO₂', data: [4300, 3800, 4100, 3900, 3500, 3300, 3450, 3200, 3600, 3800, 3950, 3700], borderColor: '#3b82f6', backgroundColor: '#3b82f6' }
+            ]"
+          />
+        </div>
+      </ChartCard>
+      <ChartCard title="Répartition par catégorie">
+        <div style="height: 300px;">
+          <BarChart
+            :labels="['Construction', 'Exploitation', 'Transport']"
+            :datasets="[{ label: 'CO₂', data: [5200, 9000, 3300], backgroundColor: '#3b82f6' }]"
+          />
+        </div>
+      </ChartCard>
     </div>
     <div class="mt-6">
       <SitesTable />

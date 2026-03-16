@@ -1,7 +1,6 @@
 <template>
-    vfffffgfgg
   <v-container>
-    blaaaakv
     <p>{{ 'SettingsPage' }}</p>
+    Page en cours de construiction...
   </v-container>
 </template>
