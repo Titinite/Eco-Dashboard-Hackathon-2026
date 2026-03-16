@@ -1,0 +1,17 @@
+@"
+# Java
+backend/target/
+*.class
+
+# Node
+frontend/node_modules/
+mobile/node_modules/
+
+# Env
+.env
+*.env.local
+
+# IDE
+.idea/
+.vscode/
+"@ | Out-File -Encoding utf8 .gitignore
