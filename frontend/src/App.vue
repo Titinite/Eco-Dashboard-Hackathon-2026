@@ -1,7 +1,14 @@
+<template>
+  <DefaultLayout>
+    <RouterView />
+  </DefaultLayout>
+</template>
+
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
+import DefaultLayout from './components/layout/DefaultLayout.vue'
 </script>
 
-<template>
-  <RouterView />
-</template>
+<style>
+.v-btn { text-transform: none !important; letter-spacing: 0 !important; }
+</style>
