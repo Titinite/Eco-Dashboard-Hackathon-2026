@@ -45,9 +45,9 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../stores/auth'
+import { registerUser } from '../../../api/authApi'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -59,44 +59,40 @@ const confirmPassword = ref('')
 const usernameError = ref('')
 const passwordError = ref('')
 const confirmPasswordError = ref('')
+const generalError = ref('')
 
 function validate() {
   usernameError.value = ''
   passwordError.value = ''
   confirmPasswordError.value = ''
+  generalError.value = ''
 
   let valid = true
 
-  if (!username.value) {
-    usernameError.value = 'Le nom d\'utilisateur est obligatoire'
-    valid = false
-  }
-
+  if (!username.value) { usernameError.value = 'Le nom d\'utilisateur est obligatoire'; valid = false }
   if (!password.value) {
-    passwordError.value = 'Le mot de passe est obligatoire'
-    valid = false
+    passwordError.value = 'Le mot de passe est obligatoire'; valid = false
   } else if (password.value.length < 6) {
-    passwordError.value = 'Le mot de passe doit faire au moins 6 caractères'
-    valid = false
+    passwordError.value = 'Le mot de passe doit faire au moins 6 caractères'; valid = false
   }
-
   if (!confirmPassword.value) {
-    confirmPasswordError.value = 'Veuillez confirmer le mot de passe'
-    valid = false
+    confirmPasswordError.value = 'Veuillez confirmer le mot de passe'; valid = false
   } else if (confirmPassword.value !== password.value) {
-    confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
-    valid = false
+    confirmPasswordError.value = 'Les mots de passe ne correspondent pas'; valid = false
   }
 
   return valid
 }
 
-function register() {
+async function register() {
   if (!validate()) return
 
-  authStore.setAuth('fake-token', {
-    username: username.value,
-  })
-  router.push('/')
+  try {
+    const data = await registerUser({ username: username.value, password: password.value })
+    authStore.setAuth(data.token, data.user)
+    router.push('/login')
+  } catch (err) {
+    generalError.value = err.response?.data?.message || 'Erreur lors de l\'inscription'
+  }
 }
 </script>

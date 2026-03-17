@@ -45,10 +45,11 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../stores/auth'
+import { loginUser } from '../../../api/authApi'
 
-const router    = useRouter()
+const router = useRouter()
 const authStore = useAuthStore()
 
 const username = ref('')
@@ -56,28 +57,24 @@ const password = ref('')
 
 const usernameError = ref('')
 const passwordError = ref('')
-const loginError    = ref(false)
+const loginError = ref('')
 
-function login() {
+async function login() {
   usernameError.value = ''
   passwordError.value = ''
-  loginError.value    = false
+  loginError.value = ''
 
-  if (!username.value) {
-    usernameError.value = 'Le username est obligatoire'
-  }
+  if (!username.value) usernameError.value = 'Le username est obligatoire'
+  if (!password.value) passwordError.value = 'Le password est obligatoire'
 
-  if (!password.value) {
-    passwordError.value = 'Le password est obligatoire'
-  }
+  if (usernameError.value || passwordError.value) return
 
-  if (!usernameError.value && !passwordError.value) {
-    if (username.value === 'admin' && password.value === '1234') {
-      authStore.setAuth('fake-token', { email: username.value + "@test.com", firstName: 'Admin', lastName: 'Admin', username: username.value })
-      router.push('/')
-    } else {
-      loginError.value = true
-    }
+  try {
+    const data = await loginUser({ username: username.value, password: password.value })
+    authStore.setAuth(data.token, data.user)
+    router.push('/')
+  } catch (err) {
+    loginError.value = err.response?.data?.message || 'Username ou password incorrect'
   }
 }
 </script>
