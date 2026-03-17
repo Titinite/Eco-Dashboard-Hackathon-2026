@@ -9,8 +9,8 @@
           Eco Dashboard
         </span>
       </template>
-    </router-link>
-    
+    </div>
+
     <v-divider vertical class="mx-3 my-3" />
 
     <template v-if="!smAndDown">
