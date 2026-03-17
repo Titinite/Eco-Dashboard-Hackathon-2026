@@ -5,9 +5,56 @@ function generateId() {
   return `${Date.now()}-${Math.round(Math.random() * 1e6)}`
 }
 
+function createSampleEntries({ baseEnergy, baseSurface, baseEmployees, baseParking }) {
+  const entries = []
+  const now = new Date()
+
+  for (let i = 6; i >= 0; i -= 1) {
+    const day = new Date(now)
+    day.setDate(now.getDate() - i)
+    const createdAt = day.toISOString()
+
+    const trend = (i - 3) * 0.04
+    const noise = (Math.random() - 0.5) * 0.1
+
+    const energy = Math.round(baseEnergy * (1 + trend + noise))
+    const surface = Math.round(baseSurface * (1 + trend * 0.05 + noise * 0.5))
+    const parking = Math.round(baseParking * (1 + trend * 0.05 + noise * 0.5))
+    const employees = Math.round(baseEmployees * (1 + trend * 0.03 + noise * 0.3))
+
+    entries.push({
+      id: generateId(),
+      createdAt,
+      energy,
+      surface,
+      parking,
+      employees,
+    })
+  }
+
+  return entries
+}
+
+function createSampleSites() {
+  return [
+    {
+      id: generateId(),
+      name: 'Site Paris Ouest',
+      createdAt: new Date().toISOString(),
+      entries: createSampleEntries({ baseEnergy: 4800, baseSurface: 12500, baseEmployees: 450, baseParking: 120 }),
+    },
+    {
+      id: generateId(),
+      name: 'Site Lyon Centre',
+      createdAt: new Date().toISOString(),
+      entries: createSampleEntries({ baseEnergy: 3200, baseSurface: 8200, baseEmployees: 320, baseParking: 80 }),
+    },
+  ]
+}
+
 export const useSiteStore = defineStore('site', () => {
-  const sites = ref([])
-  const selectedSiteId = ref(null)
+  const sites = ref(createSampleSites())
+  const selectedSiteId = ref(sites.value.length ? sites.value[0].id : null)
 
   const selectedSite = computed(() => {
     return sites.value.find((s) => s.id === selectedSiteId.value) || null
@@ -32,6 +79,13 @@ export const useSiteStore = defineStore('site', () => {
     }
   }
 
+  function updateSiteName(id, name) {
+    const site = sites.value.find((s) => s.id === id)
+    if (!site) return null
+    site.name = name
+    return site
+  }
+
   function addEntry(siteId, entry) {
     const site = sites.value.find((s) => s.id === siteId)
     if (!site) return null
@@ -43,6 +97,21 @@ export const useSiteStore = defineStore('site', () => {
     }
     site.entries.push(newEntry)
     return newEntry
+  }
+
+  function updateEntry(siteId, entryId, updates) {
+    const site = sites.value.find((s) => s.id === siteId)
+    if (!site) return null
+
+    const entryIndex = site.entries.findIndex((e) => e.id === entryId)
+    if (entryIndex === -1) return null
+
+    site.entries[entryIndex] = {
+      ...site.entries[entryIndex],
+      ...updates,
+    }
+
+    return site.entries[entryIndex]
   }
 
   function removeEntry(siteId, entryId) {
@@ -61,7 +130,9 @@ export const useSiteStore = defineStore('site', () => {
     selectedSite,
     addSite,
     removeSite,
+    updateSiteName,
     addEntry,
+    updateEntry,
     removeEntry,
     setSelectedSite,
   }
