@@ -32,11 +32,14 @@
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-btn icon variant="text" @click.stop="confirmDeleteSite(site)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
+              <v-btn icon variant="text" @click.stop="openEditSiteModal(site)">
+                <v-icon>mdi-pencil-outline</v-icon>
+              </v-btn>
+              <v-btn icon variant="text" @click.stop="confirmDeleteSite(site)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
 
             <v-list-item v-if="!siteStore.sites.length" class="justify-center">
               <span class="text-body-2">Aucun site créé pour le moment.</span>
@@ -66,7 +69,7 @@
           <v-divider />
 
           <v-card-text>
-            <v-simple-table>
+            <v-simple-table class="excel-table">
               <thead>
                 <tr>
                   <th class="text-left">#</th>
@@ -88,6 +91,9 @@
                   <td>{{ entry.energy ?? '—' }}</td>
                   <td>{{ entry.employees ?? '—' }}</td>
                   <td>
+                    <v-btn icon variant="text" @click="openEditEntryModal(entry)">
+                      <v-icon>mdi-pencil-outline</v-icon>
+                    </v-btn>
                     <v-btn icon variant="text" color="error" @click="confirmDeleteEntry(entry)">
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
@@ -127,6 +133,23 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="openEditSite" max-width="480">
+      <v-card>
+        <v-card-title>Modifier le nom du site</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="editSiteName"
+            label="Nom du site"
+            placeholder="Ex: Site Lyon"
+          />
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="openEditSite = false">Annuler</v-btn>
+          <v-btn color="primary" @click="saveSiteName">Enregistrer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="confirmDeleteOpen" max-width="520">
       <v-card>
         <v-card-title>Confirmation</v-card-title>
@@ -142,10 +165,12 @@
 
     <AddDataModal
       v-if="openAddEntry && siteStore.selectedSite"
-      :onClose="() => (openAddEntry = false)"
+      :onClose="closeAddEntry"
       :onSave="handleAddEntry"
+      :initialData="editingEntry"
     />
   </v-container>
+
 </template>
 
 <script setup>
@@ -157,7 +182,13 @@ const siteStore = useSiteStore()
 
 const openCreateSite = ref(false)
 const newSiteName = ref('')
+
+const openEditSite = ref(false)
+const editedSite = ref(null)
+const editSiteName = ref('')
+
 const openAddEntry = ref(false)
+const editingEntry = ref(null)
 
 const confirmDeleteOpen = ref(false)
 const confirmMessage = ref('')
@@ -167,6 +198,24 @@ function createSite() {
   siteStore.addSite(newSiteName.value || '')
   newSiteName.value = ''
   openCreateSite.value = false
+}
+
+function openEditSiteModal(site) {
+  editedSite.value = site
+  editSiteName.value = site.name
+  openEditSite.value = true
+}
+
+function saveSiteName() {
+  if (editedSite.value) {
+    siteStore.updateSiteName(editedSite.value.id, editSiteName.value.trim() || editedSite.value.name)
+  }
+  openEditSite.value = false
+}
+
+function openEditEntryModal(entry) {
+  editingEntry.value = entry
+  openAddEntry.value = true
 }
 
 function confirmDeleteSite(site) {
@@ -191,8 +240,18 @@ function performDelete() {
   if (confirmAction.value) confirmAction.value()
 }
 
+function closeAddEntry() {
+  editingEntry.value = null
+  openAddEntry.value = false
+}
+
 function handleAddEntry(data) {
-  siteStore.addEntry(siteStore.selectedSiteId, data)
+  if (editingEntry.value) {
+    siteStore.updateEntry(siteStore.selectedSiteId, editingEntry.value.id, data)
+    editingEntry.value = null
+  } else {
+    siteStore.addEntry(siteStore.selectedSiteId, data)
+  }
   openAddEntry.value = false
 }
 </script>
@@ -201,88 +260,148 @@ function handleAddEntry(data) {
 .gestion-page {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 1rem 0 2rem;
+  padding: 1.5rem 1rem 3rem;
 }
 
 .gestion-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 0.5rem 0;
+  margin-bottom: 1.75rem;
 }
 
 .gestion-header h1 {
-  margin: 0;
+  margin: 0 0 0.2rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  color: #0f172a;
 }
 
 .gestion-header p {
-  margin: 0.25rem 0 0;
-  color: rgba(55, 65, 81, 0.8);
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
 }
 
-.v-card {
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
-  border-radius: 0.75rem;
+:deep(.v-card) {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
 }
 
-/* ✅ Clé : :deep() pour percer l'encapsulation Vuetify */
-:deep(.v-simple-table) {
+:deep(.v-card-title) {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  padding: 1rem 1.25rem !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+:deep(.v-list-item) {
+  border-radius: 0.5rem !important;
+}
+
+:deep(.v-list-item--active) {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+:deep(.v-list-item-title) {
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: #1e293b;
+}
+
+:deep(.v-list-item-subtitle) {
+  font-size: 0.78rem !important;
+  color: #94a3b8 !important;
+}
+
+:deep(.v-btn) {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+:deep(.excel-table table) {
   border-collapse: collapse !important;
-  width: 100%;
-  border: 2px solid #cbd5e1 !important;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  width: 100% !important;
 }
 
-:deep(.v-simple-table table) {
-  border-collapse: collapse !important;
-  width: 100%;
-}
-
-:deep(.v-simple-table th),
-:deep(.v-simple-table td) {
+:deep(.excel-table thead tr th) {
   padding: 0.75rem 1rem !important;
+  border: 1px solid #94a3b8 !important;
+  border-bottom: 2px solid #94a3b8 !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  color: #1e293b !important;
+  background-color: #e2e8f0 !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+}
+
+:deep(.excel-table tbody tr td) {
+  padding: 0.7rem 1rem !important;
   border: 1px solid #cbd5e1 !important;
+  font-size: 0.875rem !important;
+  color: #334155 !important;
+  background-color: #ffffff !important;
   text-align: left !important;
   vertical-align: middle !important;
 }
 
-:deep(.v-simple-table thead th) {
-  font-weight: 700 !important;
-  color: #334155 !important;
+:deep(.excel-table tbody tr:nth-child(even) td) {
   background-color: #f1f5f9 !important;
-  border-bottom: 2px solid #94a3b8 !important;
 }
 
-:deep(.v-simple-table tbody td) {
-  color: rgba(55, 65, 81, 0.85);
+:deep(.excel-table tbody tr:hover td) {
+  background-color: #dbeafe !important;
 }
 
-:deep(.v-simple-table tbody tr:nth-child(odd)) {
-  background-color: #f8fafc;
-}
-
-:deep(.v-simple-table tbody tr:hover) {
-  background-color: #e2e8f0 !important;
-  transition: background-color 0.15s ease;
-}
-
-:deep(.v-simple-table tbody tr td:last-child) {
+:deep(.excel-table tbody tr td:first-child) {
+  color: #64748b !important;
+  font-weight: 600 !important;
+  background-color: #f8fafc !important;
+  border-right: 2px solid #94a3b8 !important;
   text-align: center !important;
 }
 
-.gestion-page .v-btn {
-  border-radius: 0.5rem;
-  text-transform: none;
-  font-weight: 600;
+:deep(.excel-table tbody tr td:last-child) {
+  text-align: center !important;
+  white-space: nowrap !important;
 }
 
-.action-buttons {
-  gap: 1.25rem;
+:deep(.v-dialog .v-card) {
+  border-radius: 0.75rem !important;
+}
+
+:deep(.v-dialog .v-card-title) {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  padding: 1.25rem 1.5rem 0.5rem !important;
+}
+
+:deep(.v-dialog .v-card-text) {
+  padding: 0.75rem 1.5rem !important;
+}
+
+:deep(.v-dialog .v-card-actions) {
+  padding: 0.75rem 1.5rem 1.25rem !important;
+  gap: 0.5rem;
 }
 </style>
-

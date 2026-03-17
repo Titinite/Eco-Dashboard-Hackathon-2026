@@ -15,6 +15,9 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useSiteStore } from '../../../stores/siteStore'
+
 const headers = [
   { title: 'Site', key: 'site' },
   { title: 'Surface (m²)', key: 'surface', align: 'end' },
@@ -24,48 +27,33 @@ const headers = [
   { title: 'CO₂ / employé (t)', key: 'co2_employee', align: 'end' }
 ]
 
-const sites = [
-  {
-    site: 'Site Paris Ouest',
-    surface: '12 500',
-    employees: 450,
-    co2_total: '4 800',
-    co2_m2: 0.38,
-    co2_employee: 10.7
-  },
-  {
-    site: 'Site Lyon Centre',
-    surface: '8 200',
-    employees: 320,
-    co2_total: '3 200',
-    co2_m2: 0.39,
-    co2_employee: 10.0
-  },
-  {
-    site: 'Site Marseille Sud',
-    surface: '9 500',
-    employees: 280,
-    co2_total: '3 600',
-    co2_m2: 0.38,
-    co2_employee: 12.9
-  },
-  {
-    site: 'Site Bordeaux',
-    surface: '6 800',
-    employees: 210,
-    co2_total: '2 700',
-    co2_m2: 0.40,
-    co2_employee: 12.9
-  },
-  {
-    site: 'Site Lille Nord',
-    surface: '10 200',
-    employees: 380,
-    co2_total: '3 900',
-    co2_m2: 0.38,
-    co2_employee: 10.3
-  }
-]
+const siteStore = useSiteStore()
+
+const sites = computed(() =>
+  siteStore.sites.map((site) => {
+    const latest = site.entries[site.entries.length - 1] || {}
+    const surface = latest.surface ?? '—'
+    const employees = latest.employees ?? '—'
+    const energy = latest.energy ?? '—'
+
+    const co2M2 = typeof surface === 'number' && typeof energy === 'number'
+      ? (energy / surface).toFixed(2)
+      : '—'
+
+    const co2Employee = typeof employees === 'number' && typeof energy === 'number'
+      ? (energy / employees).toFixed(2)
+      : '—'
+
+    return {
+      site: site.name,
+      surface,
+      employees,
+      co2_total: energy,
+      co2_m2: co2M2,
+      co2_employee: co2Employee,
+    }
+  })
+)
 </script>
 
 <style>
