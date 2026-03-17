@@ -1,109 +1,98 @@
-
 <template>
-  <v-container class="pa-6 bg-grey-lighten-4 fill-height">
-    <!-- Objectifs carbone -->
-    <v-card rounded="xl" elevation="2" class="pa-6 mb-8">
-      <div class="section-title mb-6">Objectifs carbone</div>
+  <div class="grid gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <ChartCard title="Objectifs carbones">
+        <div class="space-y-4">
 
-      <div class="mb-6">
-        <label class="field-label">Objectif de réduction annuel (%)</label>
-        <v-text-field
-          v-model.number="annualReduction"
-          type="number"
-          step="1"
-          min="0"
-          max="100"
-          variant="outlined"
-          density="comfortable"
-          hide-details
-          class="rounded-field"
-        />
-      </div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-slate-600">
+              Objectif de réduction annuel (%)
+            </label>
+            <v-text-field
+              v-model.number="annualReduction"
+              type="number"
+              density="compact"
+              variant="outlined"
+              hide-details
+              class="rounded-lg"
+            />
+          </div>
 
-      <div>
-        <label class="field-label">Année cible neutralité carbone</label>
-        <v-text-field
-          v-model.number="targetYear"
-          type="number"
-          step="1"
-          min="2000"
-          max="4000"
-          variant="outlined"
-          density="comfortable"
-          hide-details
-          class="rounded-field"
-        />
-      </div>
-    </v-card>
-
-    <!-- Paramètres de calcul -->
-    <v-card rounded="xl" elevation="2" class="pa-6 mb-8">
-      <div class="section-title mb-6">Paramètres de calcul</div>
-
-      <div
-        v-for="(item, index) in factors"
-        :key="index"
-        class="factor-row mb-5"
-      >
-        <div>
-          <div class="factor-title">{{ item.title }}</div>
-          <div class="factor-subtitle">{{ item.subtitle }}</div>
+          <div>
+            <label class="block mb-1 text-sm font-medium text-slate-600">
+              Année cible neutralité carbone
+            </label>
+            <v-text-field
+              v-model.number="targetYear"
+              type="number"
+              density="compact"
+              variant="outlined"
+              hide-details
+              class="rounded-lg"
+            />
+          </div>
         </div>
+      </ChartCard>
 
-        <v-text-field
-          v-model.number="item.value"
-          type="number"
-          step="0.001"
-          :min="item.min"
-          :max="item.max"
-          variant="outlined"
-          density="comfortable"
-          hide-details
-          class="factor-input"
-        />
-        
-      </div>
-      <v-btn
-          color="grey-lighten-3"
-          size="x-large"
-          rounded="xl"
-          class="export-btn text-none text-grey-darken-3"
-          elevation="0"
-        >
-          Bouton
-        </v-btn>
-    </v-card>
+      <ChartCard title="Paramètres de calcul">
+        <div class="space-y-3">
+          <div
+            v-for="(item, index) in factors"
+            :key="index"
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-slate-50 rounded-xl px-4 py-3"
+          >
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-slate-900">
+                {{ item.title }}
+              </div>
+              <div class="text-xs text-slate-500">
+                {{ item.subtitle }}
+              </div>
+            </div>
 
-    <!-- Export -->
-    <v-card rounded="xl" elevation="2" class="pa-6">
-      <div class="section-title mb-6">Export de données</div>
+            <div class="flex justify-end md:w-32">
+              <v-text-field
+                v-model.number="item.value"
+                type="number"
+                density="compact"
+                variant="outlined"
+                hide-details
+                class="w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </ChartCard>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <ChartCard title="Export de données">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <v-btn
+            color="primary"
+            rounded="lg"
+            class="h-10 text-sm font-semibold"
+          >
+            Exporter en CSV
+          </v-btn>
 
-      <div class="d-flex flex-wrap ga-4">
-        <v-btn
-          color="primary"
-          size="x-large"
-          rounded="xl"
-          class="export-btn"
-        >
-          Exporter en CSV
-        </v-btn>
-
-        <v-btn
-          color="grey-lighten-3"
-          size="x-large"
-          rounded="xl"
-          class="export-btn text-none text-grey-darken-3"
-          elevation="0"
-        >
-          Exporter en PDF
-        </v-btn>
-      </div>
-    </v-card>
-  </v-container>
+          <v-btn
+            color="grey-lighten-3"
+            rounded="lg"
+            elevation="0"
+            class="h-10 text-sm font-medium text-slate-700"
+          >
+            Exporter en PDF
+          </v-btn>
+        </div>
+      </ChartCard>
+      <div></div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import ChartCard from '../../components/common/Cards/ChartCard/ChartCard.vue';
 
 const annualReduction = ref(7)
 const targetYear = ref(2040)
@@ -131,84 +120,6 @@ const factors = ref([
     max: 4000,
   },
 ])
+
+window.scrollTo(0, 0)
 </script>
-
-<style scoped>
-.section-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.field-label {
-  display: block;
-  margin-bottom: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #334155;
-}
-
-.factor-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  background: #f8fafc;
-  border-radius: 20px;
-  padding: 22px 28px;
-}
-
-.factor-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-.factor-subtitle {
-  font-size: 15px;
-  color: #64748b;
-  margin-top: 4px;
-}
-
-.factor-input {
-  max-width: 180px;
-  min-width: 160px;
-}
-
-.export-btn {
-  min-width: 260px;
-  height: 78px;
-  font-size: 22px;
-  font-weight: 700;
-  text-transform: none;
-}
-
-:deep(.rounded-field .v-field),
-:deep(.factor-input .v-field) {
-  border-radius: 18px;
-}
-
-:deep(.rounded-field input),
-:deep(.factor-input input) {
-  font-size: 20px;
-  font-weight: 500;
-  color: #0f172a;
-}
-
-@media (max-width: 768px) {
-  .factor-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .factor-input {
-    max-width: 100%;
-  }
-
-  .export-btn {
-    width: 100%;
-    min-width: unset;
-  }
-}
-</style>
-
