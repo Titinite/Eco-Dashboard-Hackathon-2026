@@ -41,7 +41,7 @@
               </span>
 
               <span v-else>
-                {{ selectedSite ? selectedSite.name.slice(0, 15) : 'Tous les sites' }}
+                {{ selectedSite ? selectedSite.name.slice(0, 20) : 'Tous les sites' }}
               </span>
             </v-btn>
           </template>

@@ -1,5 +1,7 @@
 <template>
-  <Bar :data="chartData" :options="chartOptions" />
+  <div class="chart-wrapper">
+    <Bar :data="chartData" :options="chartOptions" />
+  </div>
 </template>
 
 <script setup>
@@ -28,6 +30,8 @@ const chartData = computed(() => ({
 
 const chartOptions = {
   responsive: true,
+  maintainAspectRatio: false,
+  resizeDelay: 100,
   plugins: {
     legend: {
       display: true,
@@ -41,3 +45,11 @@ const chartOptions = {
   },
 }
 </script>
+
+<style scoped>
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+</style>
