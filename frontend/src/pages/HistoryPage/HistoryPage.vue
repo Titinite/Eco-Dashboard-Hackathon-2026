@@ -37,7 +37,7 @@ const selectedSite = computed(() => siteStore.selectedSite)
 
 const historyLabels = computed(() => {
   const entries = selectedSite.value?.entries ?? []
-  return entries.map((e) => new Date(e.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }))
+  return entries.map((e) => new Date(e.createdAt).toLocaleDateString('fr-FR', { year: 'numeric' }))
 })
 
 const historyData = computed(() => {
