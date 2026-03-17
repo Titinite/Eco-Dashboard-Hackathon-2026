@@ -9,18 +9,18 @@ function createSampleEntries({ baseEnergy, baseSurface, baseEmployees, baseParki
   const entries = []
   const now = new Date()
 
-  for (let i = 6; i >= 0; i -= 1) {
-    const day = new Date(now)
-    day.setDate(now.getDate() - i)
-    const createdAt = day.toISOString()
+  for (let offset = 4; offset >= 0; offset -= 1) {
+    const date = new Date(now)
+    date.setFullYear(now.getFullYear() - offset)
+    const createdAt = date.toISOString()
 
-    const trend = (i - 3) * 0.04
-    const noise = (Math.random() - 0.5) * 0.1
+    const trend = (offset - 2) * 0.05
+    const noise = (Math.random() - 0.5) * 0.12
 
     const energy = Math.round(baseEnergy * (1 + trend + noise))
-    const surface = Math.round(baseSurface * (1 + trend * 0.05 + noise * 0.5))
-    const parking = Math.round(baseParking * (1 + trend * 0.05 + noise * 0.5))
-    const employees = Math.round(baseEmployees * (1 + trend * 0.03 + noise * 0.3))
+    const surface = Math.round(baseSurface * (1 + trend * 0.05 + noise * 0.4))
+    const parking = Math.round(baseParking * (1 + trend * 0.05 + noise * 0.4))
+    const employees = Math.round(baseEmployees * (1 + trend * 0.03 + noise * 0.2))
 
     entries.push({
       id: generateId(),

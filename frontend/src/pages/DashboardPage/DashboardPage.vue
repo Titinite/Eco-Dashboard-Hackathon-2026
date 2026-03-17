@@ -96,7 +96,7 @@ const trendPercent = computed(() => {
 
 const trendLabels = computed(() => {
   const entries = selectedSite.value?.entries ?? []
-  return entries.map((e) => new Date(e.createdAt).toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }))
+  return entries.map((e) => new Date(e.createdAt).toLocaleDateString('fr-FR', { year: 'numeric' }))
 })
 
 const trendData = computed(() => {
