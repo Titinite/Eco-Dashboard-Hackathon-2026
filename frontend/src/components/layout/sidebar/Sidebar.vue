@@ -20,6 +20,7 @@ const navItems = [
   { to: '/',         icon: 'mdi-office-building-outline', label: 'Sites'       },
   { to: '/compare',  icon: 'mdi-chart-bar',               label: 'Comparaison' },
   { to: '/history',  icon: 'mdi-history',                 label: 'Historique'  },
+  { to: '/gestion',  icon: 'mdi-file-cog-outline',        label: 'Gestion'     },
   { to: '/settings', icon: 'mdi-cog-outline',             label: 'Paramètres'  },
 ]
 </script>
