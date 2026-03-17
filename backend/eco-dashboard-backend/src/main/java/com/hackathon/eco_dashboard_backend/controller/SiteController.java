@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable; 
 import org.springframework.web.bind.annotation.PutMapping;    
 import org.springframework.web.bind.annotation.DeleteMapping;
+import com.hackathon.eco_dashboard_backend.service.PdfService;
 
 @RestController
 @RequestMapping("/sites")
@@ -21,6 +22,9 @@ public class SiteController {
 
     @Autowired
     private SiteService siteService;
+
+    @Autowired
+    private PdfService pdfService;
 
     @PostMapping
     public Site createSite(@RequestBody Site site){
@@ -57,5 +61,23 @@ public class SiteController {
             return ResponseEntity.notFound().build();
         }
     }
+@GetMapping("/{id}/pdf")
+public ResponseEntity<byte[]> generateSitePdf(@PathVariable Long id) {
+    return siteService.getSiteById(id)
+            .map(site -> {
+                try {
+                    byte[] pdfBytes = pdfService.generateSitePdfBytes(site);
+                    return ResponseEntity.ok()
+                            .header("Content-Disposition", "attachment; filename=site_" + site.getId() + ".pdf")
+                            .header("Content-Type", "application/pdf")
+                            .body(pdfBytes);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // Retourner un tableau vide en cas d'erreur pour matcher byte[]
+                    return ResponseEntity.status(500).body(new byte[0]);
+                }
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
+}
 } 
 
