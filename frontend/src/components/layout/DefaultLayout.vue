@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="d-flex flex-column fill-height">
     <Header @add="showModal = true" />
     <Sidebar />
 
@@ -9,7 +9,7 @@
       :onSave="handleSave"
     />
 
-    <v-main style="background-color: #f3f4f6;">
+    <v-main class="grow" style="background-color: #f3f4f6;">
       <v-container fluid class="pa-6">
         <slot />
       </v-container>

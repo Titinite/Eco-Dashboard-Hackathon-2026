@@ -3,14 +3,23 @@
 
     <div class="flex items-center gap-2 px-5 cursor-pointer" @click="router.push('/')">
       <span class="text-xl">🌿</span>
-      <span class="text-[15px] font-bold tracking-tight text-gray-900">Eco Dashboard</span>
-    </div>
 
+      <template v-if="!smAndDown">
+        <span class="text-[15px] font-bold tracking-tight text-gray-900">
+          Eco Dashboard
+        </span>
+      </template>
+    </router-link>
+    
     <v-divider vertical class="mx-3 my-3" />
 
-    <v-app-bar-title>
-      <span class="text-[17px] font-bold tracking-tight text-gray-900">Hackathon 2026</span>
-    </v-app-bar-title>
+    <template v-if="!smAndDown">
+      <v-app-bar-title>
+        <span class="text-[17px] font-bold tracking-tight text-gray-900">
+          Hackathon 2026
+        </span>
+      </v-app-bar-title>
+    </template>
 
     <template #append>
       <div class="flex items-center gap-3 mr-4">
@@ -19,15 +28,21 @@
           <template #activator="{ props }">
             <v-btn
               v-bind="props"
-              variant="outlined"
+              :variant="smAndDown ? 'text' : 'outlined'"
               rounded="lg"
               size="small"
-              prepend-icon="mdi-office-building-outline"
-              append-icon="mdi-chevron-down"
+              :prepend-icon="!smAndDown ? 'mdi-office-building-outline' : ''"
+              :append-icon="!smAndDown ? 'mdi-chevron-down' : 'mdi-chevron-down'"
               color="grey-darken-1"
               class="font-normal"
             >
-              {{ selectedSite ? selectedSite.name : 'Tous les sites' }}
+              <span v-if="!smAndDown">
+                {{ selectedSite ? selectedSite.name : 'Tous les sites' }}
+              </span>
+
+              <span v-else>
+                {{ selectedSite ? selectedSite.name.slice(0, 15) : 'Tous les sites' }}
+              </span>
             </v-btn>
           </template>
 
@@ -83,7 +98,6 @@
             />
           </v-list>
         </v-menu>
-
       </div>
     </template>
   </v-app-bar>
@@ -94,6 +108,9 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../stores/auth'
 import { useSiteStore } from '../../../stores/siteStore'
+import { useDisplay } from 'vuetify'
+
+const { smAndDown } = useDisplay()
 
 const router    = useRouter()
 const authStore = useAuthStore()
