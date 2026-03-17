@@ -5,7 +5,7 @@ function generateId() {
   return `${Date.now()}-${Math.round(Math.random() * 1e6)}`
 }
 
-function createSampleEntries({ baseEnergy, baseSurface, baseEmployees, baseParking }) {
+function createSampleEntries({ baseEnergy, baseSurface, baseEmployees, baseParking, baseBeton, baseAcier, baseVerre, baseBois }) {
   const entries = []
   const now = new Date()
 
@@ -21,6 +21,10 @@ function createSampleEntries({ baseEnergy, baseSurface, baseEmployees, baseParki
     const surface = Math.round(baseSurface * (1 + trend * 0.05 + noise * 0.4))
     const parking = Math.round(baseParking * (1 + trend * 0.05 + noise * 0.4))
     const employees = Math.round(baseEmployees * (1 + trend * 0.03 + noise * 0.2))
+    const beton = Math.round(baseBeton * (1 + trend * 0.03 + noise * 0.2))
+    const acier = Math.round(baseAcier * (1 + trend * 0.03 + noise * 0.2))
+    const verre = Math.round(baseVerre * (1 + trend * 0.03 + noise * 0.2))
+    const bois = Math.round(baseBois * (1 + trend * 0.03 + noise * 0.2))
 
     entries.push({
       id: generateId(),
@@ -29,6 +33,10 @@ function createSampleEntries({ baseEnergy, baseSurface, baseEmployees, baseParki
       surface,
       parking,
       employees,
+      beton,
+      acier,
+      verre,
+      bois,
     })
   }
 
@@ -41,13 +49,31 @@ function createSampleSites() {
       id: generateId(),
       name: 'Site Paris Ouest',
       createdAt: new Date().toISOString(),
-      entries: createSampleEntries({ baseEnergy: 4800, baseSurface: 12500, baseEmployees: 450, baseParking: 120 }),
+      entries: createSampleEntries({
+        baseEnergy: 4800,
+        baseSurface: 12500,
+        baseEmployees: 450,
+        baseParking: 120,
+        baseBeton: 15000,
+        baseAcier: 3500,
+        baseVerre: 1200,
+        baseBois: 800,
+      }),
     },
     {
       id: generateId(),
       name: 'Site Lyon Centre',
       createdAt: new Date().toISOString(),
-      entries: createSampleEntries({ baseEnergy: 3200, baseSurface: 8200, baseEmployees: 320, baseParking: 80 }),
+      entries: createSampleEntries({
+        baseEnergy: 3200,
+        baseSurface: 8200,
+        baseEmployees: 320,
+        baseParking: 80,
+        baseBeton: 11000,
+        baseAcier: 2800,
+        baseVerre: 900,
+        baseBois: 650,
+      }),
     },
   ]
 }
