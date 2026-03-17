@@ -1,10 +1,9 @@
 <template>
-  <v-container class="fill-height d-flex align-center justify-center">
+  <v-container class="fill-height d-flex align-center justify-center" style="min-height: 100vh;">
     <v-card class="pa-6" rounded="xl" elevation="2" width="400">
       <div class="text-h5 font-weight-bold mb-6">Connexion</div>
 
       <v-form @submit.prevent="login">
-        <!-- Username -->
         <v-text-field
           v-model="username"
           label="Username"
@@ -13,7 +12,6 @@
           class="mb-4"
         />
 
-        <!-- Password -->
         <v-text-field
           v-model="password"
           label="Password"
@@ -23,7 +21,6 @@
           class="mb-4"
         />
 
-        <!-- Error message -->
         <v-alert
           v-if="loginError"
           type="error"
@@ -36,6 +33,11 @@
         <v-btn color="primary" block size="large" type="submit">
           Se connecter
         </v-btn>
+
+        <div class="text-center mt-4 text-sm text-gray-500">
+          Pas encore de compte ?
+          <RouterLink to="/register" class="text-primary font-medium">S'inscrire</RouterLink>
+        </div>
       </v-form>
     </v-card>
   </v-container>
@@ -43,18 +45,23 @@
 
 <script setup>
 import { ref } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+import { useAuthStore } from '../../../stores/auth'
+
+const router    = useRouter()
+const authStore = useAuthStore()
 
 const username = ref('')
 const password = ref('')
 
 const usernameError = ref('')
 const passwordError = ref('')
-const loginError = ref(false)
+const loginError    = ref(false)
 
 function login() {
   usernameError.value = ''
   passwordError.value = ''
-  loginError.value = false
+  loginError.value    = false
 
   if (!username.value) {
     usernameError.value = 'Le username est obligatoire'
@@ -65,9 +72,9 @@ function login() {
   }
 
   if (!usernameError.value && !passwordError.value) {
-    // simulation login
     if (username.value === 'admin' && password.value === '1234') {
-      alert('Connexion réussie')
+      authStore.setAuth('fake-token', { email: username.value + "@test.com", firstName: 'Admin', lastName: 'Admin', username: username.value })
+      router.push('/')
     } else {
       loginError.value = true
     }

@@ -1,6 +1,6 @@
 <template>
-  <v-navigation-drawer permanent width="240" elevation="0" style="top: 77px; height: calc(100% - 75px);">
-    <v-list nav density="comfortable" class="px-3 pt-3">
+  <v-navigation-drawer permanent width="240" elevation="0" style="top: 61px; height: calc(100% - 61px);">
+    <v-list nav density="comfortable" class="px-3 pt-5">
       <v-list-item
         v-for="item in navItems"
         :key="item.to"
