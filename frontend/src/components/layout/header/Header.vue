@@ -72,7 +72,7 @@
               prepend-icon="mdi-account-outline"
               title="Mon profil"
               rounded="lg"
-              @click="router.push('/settings')"
+              @click="router.push('/profil')"
             />
             <v-list-item
               prepend-icon="mdi-logout"

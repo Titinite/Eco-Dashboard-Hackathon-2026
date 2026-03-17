@@ -9,6 +9,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import './style.css'
 import App from './App.vue'
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -19,6 +20,7 @@ const router = createRouter({
     { path: '/compare',  component: () => import('./pages/ComparePage/ComparePage.vue')   },
     { path: '/history',  component: () => import('./pages/HistoryPage/HistoryPage.vue')   },
     { path: '/settings', component: () => import('./pages/SettingsPage/SettingsPage.vue')  },
+    { path: '/profil', component: () => import('./pages/ProfilPage/ProfilPage.vue') },
   ]
 })
 
