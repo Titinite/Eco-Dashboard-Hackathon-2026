@@ -32,11 +32,14 @@
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-btn icon variant="text" @click.stop="confirmDeleteSite(site)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
+              <v-btn icon variant="text" @click.stop="openEditSiteModal(site)">
+                <v-icon>mdi-pencil-outline</v-icon>
+              </v-btn>
+              <v-btn icon variant="text" @click.stop="confirmDeleteSite(site)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
 
             <v-list-item v-if="!siteStore.sites.length" class="justify-center">
               <span class="text-body-2">Aucun site créé pour le moment.</span>
@@ -88,6 +91,9 @@
                   <td>{{ entry.energy ?? '—' }}</td>
                   <td>{{ entry.employees ?? '—' }}</td>
                   <td>
+                    <v-btn icon variant="text" @click="openEditEntryModal(entry)">
+                      <v-icon>mdi-pencil-outline</v-icon>
+                    </v-btn>
                     <v-btn icon variant="text" color="error" @click="confirmDeleteEntry(entry)">
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
@@ -127,6 +133,23 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="openEditSite" max-width="480">
+      <v-card>
+        <v-card-title>Modifier le nom du site</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="editSiteName"
+            label="Nom du site"
+            placeholder="Ex: Site Lyon"
+          />
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="openEditSite = false">Annuler</v-btn>
+          <v-btn color="primary" @click="saveSiteName">Enregistrer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="confirmDeleteOpen" max-width="520">
       <v-card>
         <v-card-title>Confirmation</v-card-title>
@@ -142,8 +165,9 @@
 
     <AddDataModal
       v-if="openAddEntry && siteStore.selectedSite"
-      :onClose="() => (openAddEntry = false)"
+      :onClose="closeAddEntry"
       :onSave="handleAddEntry"
+      :initialData="editingEntry"
     />
   </v-container>
 </template>
@@ -157,7 +181,13 @@ const siteStore = useSiteStore()
 
 const openCreateSite = ref(false)
 const newSiteName = ref('')
+
+const openEditSite = ref(false)
+const editedSite = ref(null)
+const editSiteName = ref('')
+
 const openAddEntry = ref(false)
+const editingEntry = ref(null)
 
 const confirmDeleteOpen = ref(false)
 const confirmMessage = ref('')
@@ -167,6 +197,24 @@ function createSite() {
   siteStore.addSite(newSiteName.value || '')
   newSiteName.value = ''
   openCreateSite.value = false
+}
+
+function openEditSiteModal(site) {
+  editedSite.value = site
+  editSiteName.value = site.name
+  openEditSite.value = true
+}
+
+function saveSiteName() {
+  if (editedSite.value) {
+    siteStore.updateSiteName(editedSite.value.id, editSiteName.value.trim() || editedSite.value.name)
+  }
+  openEditSite.value = false
+}
+
+function openEditEntryModal(entry) {
+  editingEntry.value = entry
+  openAddEntry.value = true
 }
 
 function confirmDeleteSite(site) {
@@ -191,8 +239,18 @@ function performDelete() {
   if (confirmAction.value) confirmAction.value()
 }
 
+function closeAddEntry() {
+  editingEntry.value = null
+  openAddEntry.value = false
+}
+
 function handleAddEntry(data) {
-  siteStore.addEntry(siteStore.selectedSiteId, data)
+  if (editingEntry.value) {
+    siteStore.updateEntry(siteStore.selectedSiteId, editingEntry.value.id, data)
+    editingEntry.value = null
+  } else {
+    siteStore.addEntry(siteStore.selectedSiteId, data)
+  }
   openAddEntry.value = false
 }
 </script>
@@ -285,4 +343,3 @@ function handleAddEntry(data) {
   gap: 1.25rem;
 }
 </style>
-

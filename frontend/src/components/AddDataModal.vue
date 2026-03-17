@@ -2,7 +2,7 @@
   <v-dialog :model-value="true" @update:modelValue="close" max-width="640">
     <v-card>
       <v-card-title class="justify-space-between">
-        Ajouter des données
+        {{ props.initialData && Object.keys(props.initialData).length ? 'Modifier des données' : 'Ajouter des données' }}
         <v-btn icon variant="text" @click="close" aria-label="Fermer">
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 
 const props = defineProps({
   onClose: {
@@ -105,6 +105,10 @@ const props = defineProps({
   onSave: {
     type: Function,
     required: true,
+  },
+  initialData: {
+    type: Object,
+    default: () => ({}),
   },
 })
 
@@ -120,6 +124,24 @@ const form = reactive({
   verre: null,
   bois: null,
 })
+
+watch(
+  () => props.initialData,
+  (value) => {
+    if (!value) return
+    Object.assign(form, {
+      surface: value.surface ?? null,
+      parking: value.parking ?? null,
+      energy: value.energy ?? null,
+      employees: value.employees ?? null,
+      beton: value.beton ?? null,
+      acier: value.acier ?? null,
+      verre: value.verre ?? null,
+      bois: value.bois ?? null,
+    })
+  },
+  { immediate: true }
+)
 
 const rules = {
   nonNegative: (value) => value === null || value === undefined || value >= 0 || 'Doit être positif',

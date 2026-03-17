@@ -1,14 +1,11 @@
 <template>
   <div class="gap-6 grid grid-cols-1">
-    <ChartCard title="Évolution historique (2020-2025)">
+    <ChartCard :title="`Évolution historique (${selectedSite?.name ?? 'Aucun site'})`">
       <div style="height: 400px; width: 100%;">
         <LineChart
-          :labels="['2020', '2021', '2022', '2023', '2024', '2025']"
+          :labels="historyLabels"
           :datasets="[
-            { label: 'Total',        data: [52000, 48000, 46000, 44500, 42000, 39000], borderColor: '#3b82f6', backgroundColor: '#3b82f6' },
-            { label: 'Construction', data: [18000, 16500, 15800, 15000, 14200, 13500], borderColor: '#10b981', backgroundColor: '#10b981' },
-            { label: 'Exploitation', data: [22000, 20500, 19500, 18800, 17500, 16000], borderColor: '#f59e0b', backgroundColor: '#f59e0b' },
-            { label: 'Transport',    data: [12000, 11000, 10700, 10700, 10300,  9500], borderColor: '#ef4444', backgroundColor: '#ef4444' },
+            { label: 'Émissions (kWh)', data: historyData, borderColor: '#3b82f6', backgroundColor: '#3b82f6' },
           ]"
         />
       </div>
@@ -29,7 +26,22 @@
 </template>
 
 <script setup>
-import ChartCard from '../../components/common/Cards/ChartCard/ChartCard.vue';
-import CarbonTimeline from '../../components/common/Timeline/Timeline.vue';
-import LineChart from '../../components/common/Cards/ChartCard/LineChart/LineChart.vue';
+import { computed } from 'vue'
+import ChartCard from '../../components/common/Cards/ChartCard/ChartCard.vue'
+import CarbonTimeline from '../../components/common/Timeline/Timeline.vue'
+import LineChart from '../../components/common/Cards/ChartCard/LineChart/LineChart.vue'
+import { useSiteStore } from '../../stores/siteStore'
+
+const siteStore = useSiteStore()
+const selectedSite = computed(() => siteStore.selectedSite)
+
+const historyLabels = computed(() => {
+  const entries = selectedSite.value?.entries ?? []
+  return entries.map((e) => new Date(e.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }))
+})
+
+const historyData = computed(() => {
+  const entries = selectedSite.value?.entries ?? []
+  return entries.map((e) => e.energy ?? 0)
+})
 </script>

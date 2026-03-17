@@ -1,7 +1,7 @@
 <template>
   <v-app-bar flat color="white" border="b" height="60" :elevation="0" style="z-index: 1004; left: 0 !important; border-bottom: 1px solid #e5e7eb !important;">
 
-    <div class="flex items-center gap-2 px-5">
+    <div class="flex items-center gap-2 px-5 cursor-pointer" @click="router.push('/')">
       <span class="text-xl">🌿</span>
       <span class="text-[15px] font-bold tracking-tight text-gray-900">Eco Dashboard</span>
     </div>
