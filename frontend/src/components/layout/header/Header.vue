@@ -93,12 +93,13 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../stores/auth'
+import { useSiteStore } from '../../../stores/siteStore'
 
 const router    = useRouter()
 const authStore = useAuthStore()
+const siteStore = useSiteStore()
 
 const emit = defineEmits(['add'])
-const siteStore = useSiteStore()
 
 const selectedSite = computed(() => siteStore.selectedSite)
 const sites = computed(() => siteStore.sites)
@@ -112,7 +113,7 @@ const initials = computed(() => {
 })
 
 function selectSite(site) {
-  siteStore.setSelectedSite(site.id)
+  siteStore.setSelectedSite(site?.id ?? null)
 }
 
 function handleLogout() {
