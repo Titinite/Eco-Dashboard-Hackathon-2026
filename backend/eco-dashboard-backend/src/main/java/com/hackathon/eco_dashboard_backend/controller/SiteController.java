@@ -28,6 +28,19 @@ public class SiteController {
     public List<Site> getAllSites(){
         return siteService.getAllSites();
     }
+    /* 
+    @GetMapping("/{id}")
+    public Site getSiteById(@PathVariable Long id){
+        return siteService.getSiteById(id);
+    }           
 
+    public Site updateSite(@PathVariable Long id, @RequestBody Site site){
+        return siteService.updateSite(id, site);
+    }
+
+    public void deleteSite(@PathVariable Long id){
+        siteService.deleteSite(id);
+    }
+*/
 } 
 
