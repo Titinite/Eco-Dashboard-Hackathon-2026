@@ -93,9 +93,11 @@
 <script setup>
 import { ref } from 'vue'
 import ChartCard from '../../components/common/Cards/ChartCard/ChartCard.vue';
+import { useSiteStore } from '../../stores/siteStore'
 
 const annualReduction = ref(7)
 const targetYear = ref(2040)
+const siteStore = useSiteStore()
 
 const factors = ref([
   {

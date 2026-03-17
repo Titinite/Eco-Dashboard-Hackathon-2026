@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <KpiCard
         label="CO₂ total"
         :value="co2Total"
@@ -21,14 +21,17 @@
       />
     </div>
 
-    <div class="grid grid-cols-2 gap-4 mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
       <ChartCard title="Évolution des émissions">
         <div style="height: 300px;">
           <LineChart
             :labels="trendLabels"
-            :datasets="[
-              { label: 'Émissions (kWh)', data: trendData, borderColor: '#3b82f6', backgroundColor: '#3b82f6' }
-            ]"
+            :datasets="[{
+              label: 'Émissions (kWh)',
+              data: trendData,
+              borderColor: '#3b82f6',
+              backgroundColor: '#3b82f6'
+            }]"
           />
         </div>
       </ChartCard>
@@ -37,9 +40,11 @@
         <div style="height: 300px;">
           <BarChart
             :labels="['Construction', 'Exploitation', 'Transport']"
-            :datasets="[
-              { label: selectedSite?.name || '—', data: distributionData, backgroundColor: '#3b82f6' }
-            ]"
+            :datasets="[{
+              label: selectedSite?.name || '—',
+              data: distributionData,
+              backgroundColor: '#3b82f6'
+            }]"
           />
         </div>
       </ChartCard>

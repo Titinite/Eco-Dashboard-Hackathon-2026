@@ -12,7 +12,7 @@
     />
   </v-row>
 
-  <div class="grid grid-cols-3 gap-4 mt-6">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
     <MultiKpiCard
       title="CO₂ total"
       :items="co2Items"
@@ -27,7 +27,7 @@
     />
   </div>
 
-  <div class="grid grid-cols-2 gap-4 mt-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
     <ChartCard title="Répartition par catégorie">
       <BarChart
         :labels="['Construction', 'Exploitation', 'Transport']"
