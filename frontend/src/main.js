@@ -13,6 +13,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/',         component: () => import('./pages/DashboardPage/DashboardPage.vue') },
+    { path: '/gestion',  component: () => import('./pages/GestionPage/GestionPage.vue')  },
     { path: '/compare',  component: () => import('./pages/ComparePage/ComparePage.vue')   },
     { path: '/history',  component: () => import('./pages/HistoryPage/HistoryPage.vue')   },
     { path: '/settings', component: () => import('./pages/SettingsPage/SettingsPage.vue')  },

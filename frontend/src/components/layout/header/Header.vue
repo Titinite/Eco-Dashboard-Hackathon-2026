@@ -49,16 +49,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useSiteStore } from '../../../stores/siteStore'
 
-const sites = ref([
-  { id: 1, name: 'Site Rennes' },
-  { id: 2, name: 'Site Paris'  },
-])
+const emit = defineEmits(['add'])
+const siteStore = useSiteStore()
 
-const selectedSite = ref(null)
+const selectedSite = computed(() => siteStore.selectedSite)
+const sites = computed(() => siteStore.sites)
 
 function selectSite(site) {
-  selectedSite.value = site
+  siteStore.setSelectedSite(site.id)
 }
 </script>
