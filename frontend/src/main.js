@@ -15,8 +15,9 @@ const router = createRouter({
     { path: '/login',    component: () => import('./pages/Auth/LoginPage/LoginPage.vue'),       meta: { public: true } },
     { path: '/register', component: () => import('./pages/Auth/RegisterPage/RegisterPage.vue'), meta: { public: true } },
     { path: '/',         component: () => import('./pages/DashboardPage/DashboardPage.vue') },
-    { path: '/compare',  component: () => import('./pages/ComparePage/ComparePage.vue')    },
-    { path: '/history',  component: () => import('./pages/HistoryPage/HistoryPage.vue')    },
+    { path: '/gestion',  component: () => import('./pages/GestionPage/GestionPage.vue')  },
+    { path: '/compare',  component: () => import('./pages/ComparePage/ComparePage.vue')   },
+    { path: '/history',  component: () => import('./pages/HistoryPage/HistoryPage.vue')   },
     { path: '/settings', component: () => import('./pages/SettingsPage/SettingsPage.vue')  },
   ]
 })

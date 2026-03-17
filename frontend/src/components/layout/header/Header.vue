@@ -97,12 +97,11 @@ import { useAuthStore } from '../../../stores/auth'
 const router    = useRouter()
 const authStore = useAuthStore()
 
-const sites = ref([
-  { id: 1, name: 'Site Rennes' },
-  { id: 2, name: 'Site Paris'  },
-])
+const emit = defineEmits(['add'])
+const siteStore = useSiteStore()
 
-const selectedSite = ref(null)
+const selectedSite = computed(() => siteStore.selectedSite)
+const sites = computed(() => siteStore.sites)
 
 const initials = computed(() => {
   const u = authStore.user
@@ -113,7 +112,7 @@ const initials = computed(() => {
 })
 
 function selectSite(site) {
-  selectedSite.value = site
+  siteStore.setSelectedSite(site.id)
 }
 
 function handleLogout() {
