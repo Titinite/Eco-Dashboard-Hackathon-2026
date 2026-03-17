@@ -15,12 +15,11 @@
         :title="item.label"
         rounded="lg"
         color="primary"
-        class="mb-1"
+        class="mb-1 pl-6"
       />
     </v-list>
   </v-navigation-drawer>
 
-  <!-- Bottom nav mobile -->
   <v-bottom-navigation
     v-if="isMobile"
     v-model="activeTab"
