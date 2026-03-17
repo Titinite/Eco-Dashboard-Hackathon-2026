@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hackathon.eco_dashboard_backend.model.User;
 import com.hackathon.eco_dashboard_backend.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtService jwtService;
@@ -19,10 +23,11 @@ public class AuthService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if(!user.getPassword().equals(password)){
+ /*       if(!user.getPassword().equals(password)){
             throw new RuntimeException("Invalid password");
         }
-
+/* */
+    user.setPassword(passwordEncoder.encode(password));
         return jwtService.generateToken(username);
     }
     public void register(String username, String password){
@@ -30,7 +35,8 @@ public class AuthService {
     User user = new User();
 
     user.setUsername(username);
-    user.setPassword(password);
+     user.setPassword(passwordEncoder.encode(password));
+   // user.setPassword(password);
 
     userRepository.save(user);
 }
